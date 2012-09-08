@@ -2,7 +2,7 @@
 #
 
 require 'bigdecimal'
-require 'CGUser'
+require File.join(File.dirname(__FILE__), 'CGUser')
 
 class CGParticipantPayTriple
     include XML::Mapping
@@ -63,6 +63,16 @@ class BigDecimal
 
     def roundToWholeCents
         (self * 100).round / 100
+    end
+
+    def moneyString
+        str = self.to_s('F')
+        index = str.index('.')
+        if (index >= (str.length - 2))
+            str << "0"
+        end
+
+        return "$#{str}"
     end
 end
 

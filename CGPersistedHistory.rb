@@ -93,6 +93,17 @@ class CGHistory
         return filteredUsers
     end
 
+    def findUserGroupsContainingUser(user)
+        filteredGroups = Array.new
+        @userGroups.each { |group|
+            includeThisGroup = group.users.include?(user)
+            if (includeThisGroup)
+                filteredGroups << group
+            end
+        }
+        return filteredGroups 
+    end
+
     def findUserGroupsWithPrefix(namePrefix)
         filteredGroups = Array.new
         @userGroups.each { |group|
