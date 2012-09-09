@@ -97,7 +97,7 @@ class CGBill
     text_node :uuid, "@uuid"
     array_node :participantPayTriples, "participantPayTriples", "CGParticipantPayTriple", :class=>CGParticipantPayTriple, :default_value=>[]
 
-    attr_reader :participantPayTriples
+    attr_reader :participantPayTriples, :comment
 
     def initialize(comment, date, participantPayTriples)
         @comment = comment

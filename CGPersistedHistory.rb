@@ -118,16 +118,51 @@ class CGHistory
     def shuffleDebtsForGroup(group, pretend)
         if (!pretend)
             puts "Only pretend is supported for now!"
-            return
+            return nil
         end
 
-        # find every bill that was amongst a subset of group's users
-        # Create an OweChart for these users - make OweChart filter bills based on the set of users it's constructed with
-        # At the end, we can ask the owechart for reshuffled debts
-        # somehow return a representation of these reshuffled debts
+        if (group.users.size > 3)
+            puts "Shuffling is only supported for at most 3 users :("
+            return nil
+        end
 
+        # Shuffling for 3 people can be accomplished by an OweChart with a single bill
+        #        A -($100)-> B
+        #        ^       ($5)^
+        #         \       /
+        #         ($50)- C
+        #
+        # SharedBill where each user paid the amount that's coming in and is responsible for the amount going out
+        # A's triple is triple(a, amountPaid=50, amountOwe=100)
+        # B's triple is triple(b, amountPaid=105, amountOwe=0)
+        # C's triple is triple(c, amountPaid=0, amountOwe=55)
+        triples = []
+        group.users.each { |user|
+            amountPaid = BigDecimal.new("0")
+            amountOwe = BigDecimal.new("0")
+            # Grab the owechart for this user
+            chart = oweChartForUser(user)
+            if (chart.nil?)
+                puts "Couldn't find a chart for user #{user}."
+                return nil
+            end
+
+            chart.each { |otherUser, oweAmount|
+                if (oweAmount > 0) # otherUser owes user - coming in
+                    amountPaid += oweAmount
+                else # user owes otherUser - going out
+                    amountOwe += (-oweAmount)
+                end
+            }
+            triples << CGParticipantPayTriple.new(user, amountPaid, amountOwe)
+        }
+
+        shuffledBill = CGBill.new("shuffledBill", Time.now, triples)
+        shuffledChart = CGOweChart.new
+        shuffledChart.addBill(shuffledBill)
+
+        return shuffledChart
     end
-
 
     def addBill(bill)
         alreadyInSet = (@bills.add?(bill) == nil)

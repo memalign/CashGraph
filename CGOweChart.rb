@@ -37,7 +37,7 @@ class CGOweChart
         }
         # oweTables[user1][user2] = N
         # if (N > 0) user2 owes user1 N dollars
-        # if (N < 0) user1 owes user2 N dollars
+        # if (N < 0) user1 owes user2 -N dollars
 
         # Normalize all of the triples so that one of amountOwe and amountPaid is 0
         triples.each { |triple|
