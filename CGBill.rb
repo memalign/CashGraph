@@ -97,7 +97,7 @@ class CGBill
     text_node :uuid, "@uuid"
     array_node :participantPayTriples, "participantPayTriples", "CGParticipantPayTriple", :class=>CGParticipantPayTriple, :default_value=>[]
 
-    attr_reader :participantPayTriples, :comment
+    attr_reader :participantPayTriples, :comment, :date
 
     def initialize(comment, date, participantPayTriples)
         @comment = comment
@@ -171,6 +171,17 @@ class CGBill
         }
 
         CGBill.new(comment, Time.now, triples)
+    end
+
+    def includesUser?(user)
+        ret = false
+        @participantPayTriples.each { |triple|
+            if (triple.user.eql?(user))
+                ret = true
+                break
+            end
+        }
+        return ret
     end
 
     def to_s

@@ -164,6 +164,16 @@ class CGHistory
         return shuffledChart
     end
 
+    def findBillsForUser(user)
+        bills = []
+        @bills.each { |bill|
+            if (bill.includesUser?(user))
+                bills << bill
+            end
+        }
+        return bills
+    end
+
     def addBill(bill)
         alreadyInSet = (@bills.add?(bill) == nil)
         if (!alreadyInSet && @oweChart != nil)
