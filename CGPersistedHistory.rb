@@ -84,7 +84,7 @@ class CGHistory
         @users.each { |user|
             includeThisUser = !hasFilters
             includeThisUser ||= (user.email == email)
-            includeThisUser ||= (!namePrefix.nil? && user.name.index(namePrefix) == 0)
+            includeThisUser ||= (!namePrefix.nil? && user.name.downcase.index(namePrefix.downcase) == 0)
             if (includeThisUser)
                 filteredUsers << user
             end
