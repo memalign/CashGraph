@@ -148,10 +148,14 @@ class CGHistory
             end
 
             chart.each { |otherUser, oweAmount|
-                if (oweAmount > 0) # otherUser owes user - coming in
-                    amountPaid += oweAmount
-                else # user owes otherUser - going out
-                    amountOwe += (-oweAmount)
+                # Only use this entry if otherUser is in the group
+                includeThisEntry = group.users.include?(otherUser)
+                if (includeThisEntry)
+                    if (oweAmount > 0) # otherUser owes user - coming in
+                        amountPaid += oweAmount
+                    else # user owes otherUser - going out
+                        amountOwe += (-oweAmount)
+                    end
                 end
             }
             triples << CGParticipantPayTriple.new(user, amountPaid, amountOwe)
